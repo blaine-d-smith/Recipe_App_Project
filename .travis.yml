@@ -1,0 +1,9 @@
+language: python
+python:
+  - "3.8"
+
+services:
+  - docker
+
+script:
+  - docker-compose run app sh -c "python3 manage.py test && flake8"
