@@ -14,4 +14,9 @@ urlpatterns = [
         views.CreateTokenView.as_view(),
         name='token'
     ),
+    path(
+        'profile/',
+        views.ManageUserView.as_view(),
+        name='profile'
+    ),
 ]
