@@ -30,7 +30,9 @@ class TagViewSet(viewsets.GenericViewSet,
         serializer.save(user=self.request.user)
 
 
-class IngredientViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
+class IngredientViewSet(viewsets.GenericViewSet,
+                        mixins.ListModelMixin,
+                        mixins.CreateModelMixin):
     """
     Viewset for displaying active ingredient data as JSON.
     """
@@ -46,3 +48,9 @@ class IngredientViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
         with the authenticated user.
         """
         return self.queryset.filter(user=self.request.user).order_by('-name')
+
+    def perform_create(self, serializer):
+        """
+        Creates a new ingredient.
+        """
+        serializer.save(user=self.request.user)
