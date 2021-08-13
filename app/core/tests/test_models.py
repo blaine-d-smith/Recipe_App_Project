@@ -62,7 +62,7 @@ class ModelTests(TestCase):
 
     def test_tag_str(self):
         """
-        Tests the tage string representation.
+        Tests the tag string representation.
         """
         tag = models.Tag.objects.create(
             user=dummy_user(),
@@ -70,3 +70,14 @@ class ModelTests(TestCase):
         )
 
         self.assertEqual(str(tag), tag.name)
+
+    def test_ingredient_str(self):
+        """
+        Tests the ingredient string representation.
+        """
+        ingredient = models.Ingredient.objects.create(
+            user=dummy_user(),
+            name='Sugar'
+        )
+
+        self.assertEqual(str(ingredient), ingredient.name)

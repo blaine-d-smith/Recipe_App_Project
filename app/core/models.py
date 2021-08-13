@@ -60,3 +60,20 @@ class Tag(models.Model):
         Provides a readable string representation of Tag object.
         """
         return self.name
+
+
+class Ingredient(models.Model):
+    """
+    Ingredient model within recipe.
+    """
+    name = models.CharField(max_length=150)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        """
+        Provides a readable string representation of Ingredient object.
+        """
+        return self.name
