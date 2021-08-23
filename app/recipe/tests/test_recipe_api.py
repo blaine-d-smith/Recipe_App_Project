@@ -193,3 +193,46 @@ class AuthenticatedRecipesAPITests(TestCase):
         self.assertEqual(ingredients.count(), 2)
         self.assertIn(test_ingredient_1, ingredients)
         self.assertIn(test_ingredient_2, ingredients)
+
+    def test_update_partial_recipe(self):
+        """
+        Test updating recipes with patch.
+        """
+        recipe = create_sample_recipe(user=self.user)
+        recipe.tags.add(create_sample_tag(user=self.user))
+        new_tag = create_sample_tag(user=self.user, name='Sriracha')
+        payload = {
+            'title': 'Honey Sriracha Chicken',
+            'tags': [new_tag.id],
+        }
+        url = recipe_detail_url(recipe.id)
+        self.client.patch(url, payload)
+
+        recipe.refresh_from_db()
+        self.assertEqual(recipe.title, payload['title'])
+        tags = recipe.tags.all()
+        self.assertEqual(len(tags), 1)
+        self.assertIn(new_tag, tags)
+
+    def test_update_complete_recipe(self):
+        """
+        Test updating recipes with put.
+        """
+        recipe = create_sample_recipe(user=self.user)
+        recipe.tags.add(create_sample_tag(user=self.user))
+        payload = {
+            'title': 'Cajun Shrimp and Rice Skillet',
+            'prep_time_mins': 10,
+            'cook_time_mins': 35,
+            'price': 11.00,
+        }
+        url = recipe_detail_url(recipe.id)
+        self.client.put(url, payload)
+
+        recipe.refresh_from_db()
+        self.assertEqual(recipe.title, payload['title'])
+        self.assertEqual(recipe.prep_time_mins, payload['prep_time_mins'])
+        self.assertEqual(recipe.cook_time_mins, payload['cook_time_mins'])
+        self.assertEqual(recipe.price, payload['price'])
+        tags = recipe.tags.all()
+        self.assertEqual(len(tags), 0)
