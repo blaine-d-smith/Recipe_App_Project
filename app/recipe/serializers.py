@@ -67,3 +67,18 @@ class RecipeSerializer(serializers.ModelSerializer):
             'url',
         )
         read_only_fields = ('id',)
+
+
+class RecipeDetailSerializer(RecipeSerializer):
+    """
+    Serializes and deserializes recipe detail
+    instances into representations(JSON).
+    """
+    ingredients = IngredientSerializer(
+        many=True,
+        read_only=True
+    )
+    tags = TagSerializer(
+        many=True,
+        read_only=True
+    )
