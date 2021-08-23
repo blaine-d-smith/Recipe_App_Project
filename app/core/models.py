@@ -77,3 +77,26 @@ class Ingredient(models.Model):
         Provides a readable string representation of Ingredient object.
         """
         return self.name
+
+
+class Recipe(models.Model):
+    """
+    Creates a new Recipe model.
+    """
+    title = models.CharField(max_length=150)
+    prep_time_mins = models.IntegerField()
+    cook_time_mins = models.IntegerField()
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+    url = models.CharField(max_length=255, blank=True)
+    ingredients = models.ManyToManyField('Ingredient')
+    tags = models.ManyToManyField('Tag')
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        """
+        Provides a readable string representation of Recipe object.
+        """
+        return self.title
