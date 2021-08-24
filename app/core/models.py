@@ -1,7 +1,19 @@
+import os
+import uuid
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
                                         PermissionsMixin)
+
+
+def recipe_image_filepath(instance, filename):
+    """
+    Generates filepath for recipe image.
+    """
+    ext = filename.split('.')[-1]
+    filename = f'{uuid.uuid4()}.{ext}'
+
+    return os.path.join('uploads/recipe/', filename)
 
 
 class UserManager(BaseUserManager):
@@ -84,6 +96,7 @@ class Recipe(models.Model):
     Creates a new Recipe model.
     """
     title = models.CharField(max_length=150)
+    image = models.ImageField(null=True, upload_to=recipe_image_filepath)
     prep_time_mins = models.IntegerField()
     cook_time_mins = models.IntegerField()
     price = models.DecimalField(max_digits=6, decimal_places=2)
