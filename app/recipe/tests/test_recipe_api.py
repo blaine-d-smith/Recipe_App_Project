@@ -1,5 +1,6 @@
 import os
 import tempfile
+from PIL import Image
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -7,7 +8,6 @@ from rest_framework import status
 from rest_framework.test import APIClient
 from core.models import Recipe, Tag, Ingredient
 from recipe.serializers import RecipeSerializer, RecipeDetailSerializer
-from PIL import Image
 
 RECIPES_URL = reverse('recipe:recipe-list')
 
@@ -189,7 +189,7 @@ class AuthenticatedRecipesAPITests(TestCase):
             user=self.user,
             name='Russet Potato')
         payload = {
-            'title': 'Baked potatoes',
+            'title': 'Potatoes',
             'ingredients': [test_ingredient_1.id, test_ingredient_2.id],
             'prep_time_mins': 5,
             'cook_time_mins': 65,
@@ -212,7 +212,7 @@ class AuthenticatedRecipesAPITests(TestCase):
         recipe.tags.add(create_sample_tag(user=self.user))
         new_tag = create_sample_tag(user=self.user, name='Sriracha')
         payload = {
-            'title': 'Honey Sriracha Chicken',
+            'title': 'Honey Sriracha Beans',
             'tags': [new_tag.id],
         }
         url = recipe_detail_url(recipe.id)
@@ -253,7 +253,7 @@ class RecipeImageUploadTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(
             'test2@blainesmith.me',
-            'password12345'
+            'password12345*'
         )
         self.client = APIClient()
         self.client.force_authenticate(self.user)
@@ -286,3 +286,47 @@ class RecipeImageUploadTests(TestCase):
         res = self.client.post(url, {'image': 'notimage'}, format='multipart')
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_filter_recipes_by_tags(self):
+        """
+        Test retrieving recipes by tags.
+        """
+        recipe_1 = create_sample_recipe(user=self.user, title='Baked chicken wings')
+        recipe_2 = create_sample_recipe(user=self.user, title='Fluffy french toast')
+        tag_1 = create_sample_tag(user=self.user, name='Appetizer')
+        tag_2 = create_sample_tag(user=self.user, name='Breakfast')
+        recipe_1.tags.add(tag_1)
+        recipe_2.tags.add(tag_2)
+        recipe_3 = create_sample_recipe(user=self.user, title='Beef stroganoff')
+
+        res = self.client.get(RECIPES_URL, {'tags': f'{tag_1.id},{tag_2.id}'})
+
+        serializer_1 = RecipeSerializer(recipe_1)
+        serializer_2 = RecipeSerializer(recipe_2)
+        serializer_3 = RecipeSerializer(recipe_3)
+        self.assertIn(serializer_1.data, res.data)
+        self.assertIn(serializer_2.data, res.data)
+        self.assertNotIn(serializer_3.data, res.data)
+
+    # def test_filter_recipes_by_ingredients(self):
+    #     """
+    #     Test retrieving recipes by ingredients.
+    #     """
+    #     test_recipe_1 = create_sample_recipe(user=self.user, title='Vanilla Crepes')
+    #     test_recipe_2 = create_sample_recipe(user=self.user, title='Lasagna')
+    #     test_ingredient_1 = create_sample_ingredient(user=self.user, name='Sugar')
+    #     test_ingredient_2 = create_sample_ingredient(user=self.user, name='Italian sausage')
+    #     test_recipe_1.ingredients.add(test_ingredient_1)
+    #     test_recipe_2.ingredients.add(test_ingredient_2)
+    #     test_recipe_3 = create_sample_recipe(user=self.user, title='Meatloaf')
+    #     res = self.client.get(
+    #         RECIPES_URL,
+    #         {'ingredients': f'{test_ingredient_1.id},{test_ingredient_2.id}'}
+    #     )
+    #
+    #     serializer_1 = RecipeSerializer(test_recipe_1)
+    #     serializer_2 = RecipeSerializer(test_recipe_2)
+    #     serializer_3 = RecipeSerializer(test_recipe_3)
+    #     self.assertIn(serializer_1.data, res.data)
+    #     self.assertIn(serializer_2.data, res.data)
+    #     self.assertNotIn(serializer_3.data, res.data)
