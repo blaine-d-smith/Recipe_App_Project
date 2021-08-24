@@ -308,25 +308,25 @@ class RecipeImageUploadTests(TestCase):
         self.assertIn(serializer_2.data, res.data)
         self.assertNotIn(serializer_3.data, res.data)
 
-    # def test_filter_recipes_by_ingredients(self):
-    #     """
-    #     Test retrieving recipes by ingredients.
-    #     """
-    #     test_recipe_1 = create_sample_recipe(user=self.user, title='Vanilla Crepes')
-    #     test_recipe_2 = create_sample_recipe(user=self.user, title='Lasagna')
-    #     test_ingredient_1 = create_sample_ingredient(user=self.user, name='Sugar')
-    #     test_ingredient_2 = create_sample_ingredient(user=self.user, name='Italian sausage')
-    #     test_recipe_1.ingredients.add(test_ingredient_1)
-    #     test_recipe_2.ingredients.add(test_ingredient_2)
-    #     test_recipe_3 = create_sample_recipe(user=self.user, title='Meatloaf')
-    #     res = self.client.get(
-    #         RECIPES_URL,
-    #         {'ingredients': f'{test_ingredient_1.id},{test_ingredient_2.id}'}
-    #     )
-    #
-    #     serializer_1 = RecipeSerializer(test_recipe_1)
-    #     serializer_2 = RecipeSerializer(test_recipe_2)
-    #     serializer_3 = RecipeSerializer(test_recipe_3)
-    #     self.assertIn(serializer_1.data, res.data)
-    #     self.assertIn(serializer_2.data, res.data)
-    #     self.assertNotIn(serializer_3.data, res.data)
+    def test_filter_recipes_by_ingredients(self):
+        """
+        Test retrieving recipes by ingredients.
+        """
+        recipe_1 = create_sample_recipe(user=self.user, title='Vanilla Crepes')
+        recipe_2 = create_sample_recipe(user=self.user, title='Lasagna')
+        ingredient_1 = create_sample_ingredient(user=self.user, name='Sugar')
+        ingredient_2 = create_sample_ingredient(user=self.user, name='Italian sausage')
+        recipe_1.ingredients.add(ingredient_1)
+        recipe_2.ingredients.add(ingredient_2)
+        recipe_3 = create_sample_recipe(user=self.user, title='Meatloaf')
+        res = self.client.get(
+            RECIPES_URL,
+            {'ingredients': f'{ingredient_1.id},{ingredient_2.id}'}
+        )
+
+        serializer_1 = RecipeSerializer(recipe_1)
+        serializer_2 = RecipeSerializer(recipe_2)
+        serializer_3 = RecipeSerializer(recipe_3)
+        self.assertIn(serializer_1.data, res.data)
+        self.assertIn(serializer_2.data, res.data)
+        self.assertNotIn(serializer_3.data, res.data)
