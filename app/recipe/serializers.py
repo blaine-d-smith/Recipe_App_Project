@@ -82,3 +82,18 @@ class RecipeDetailSerializer(RecipeSerializer):
         many=True,
         read_only=True
     )
+
+
+class RecipeImageSerializer(serializers.ModelSerializer):
+    """
+    Serializes and deserializes recipe image
+    instances into representations(JSON).
+    """
+
+    class Meta:
+        model = Recipe
+        fields = (
+            'id',
+            'image',
+        )
+        read_only_fields = ('id',)

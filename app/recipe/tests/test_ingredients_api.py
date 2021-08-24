@@ -33,7 +33,7 @@ class AuthenticatedIngredientsAPITests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(
             'test@blainesmith.me',
-            'password12345'
+            'password12345*'
         )
         self.client = APIClient()
         self.client.force_authenticate(self.user)
