@@ -291,13 +291,16 @@ class RecipeImageUploadTests(TestCase):
         """
         Test retrieving recipes by tags.
         """
-        recipe_1 = create_sample_recipe(user=self.user, title='Baked chicken wings')
-        recipe_2 = create_sample_recipe(user=self.user, title='Fluffy french toast')
+        recipe_1 = create_sample_recipe(user=self.user,
+                                        title='Baked chicken wings')
+        recipe_2 = create_sample_recipe(user=self.user,
+                                        title='Fluffy french toast')
         tag_1 = create_sample_tag(user=self.user, name='Appetizer')
         tag_2 = create_sample_tag(user=self.user, name='Breakfast')
         recipe_1.tags.add(tag_1)
         recipe_2.tags.add(tag_2)
-        recipe_3 = create_sample_recipe(user=self.user, title='Beef stroganoff')
+        recipe_3 = create_sample_recipe(user=self.user,
+                                        title='Beef stroganoff')
 
         res = self.client.get(RECIPES_URL, {'tags': f'{tag_1.id},{tag_2.id}'})
 
@@ -312,10 +315,13 @@ class RecipeImageUploadTests(TestCase):
         """
         Test retrieving recipes by ingredients.
         """
-        recipe_1 = create_sample_recipe(user=self.user, title='Vanilla Crepes')
-        recipe_2 = create_sample_recipe(user=self.user, title='Lasagna')
+        recipe_1 = create_sample_recipe(user=self.user,
+                                        title='Vanilla Crepes')
+        recipe_2 = create_sample_recipe(user=self.user,
+                                        title='Lasagna')
         ingredient_1 = create_sample_ingredient(user=self.user, name='Sugar')
-        ingredient_2 = create_sample_ingredient(user=self.user, name='Italian sausage')
+        ingredient_2 = create_sample_ingredient(user=self.user,
+                                                name='Italian sausage')
         recipe_1.ingredients.add(ingredient_1)
         recipe_2.ingredients.add(ingredient_2)
         recipe_3 = create_sample_recipe(user=self.user, title='Meatloaf')
